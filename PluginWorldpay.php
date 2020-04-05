@@ -83,11 +83,6 @@ class PluginWorldpay extends GatewayPlugin
                                         "description"   =>lang("No description"),
                                         "value"         =>"0"
                                        ),
-                   lang("30 Day Billing") => array (
-                                        "type"          =>"hidden",
-                                        "description"   =>lang("Select YES if you want ClientExec to treat monthly billing by 30 day intervals.  If you select NO then the same day will be used to determine intervals."),
-                                        "value"         =>"0"
-                                       ),
                    lang("Check CVV2") => array (
                                         "type"          =>"hidden",
                                         "description"   =>lang("Select YES if you want to accept CVV2 for this plugin."),
@@ -110,7 +105,6 @@ class PluginWorldpay extends GatewayPlugin
         } else {
             $strURL = $this->buildnormal($params);
         }
-
     }
 
     /**********************************************************************************/
@@ -122,14 +116,16 @@ class PluginWorldpay extends GatewayPlugin
             $strRet = "<html>\n";
             $strRet .= "<head></head>\n";
             $strRet .= "<body>\n";
-            $strRet .= "<form name=\"frmWorldpay\" action=\"https://select.worldpay.com/wcc/purchase\" method=\"post\">\n";
+            $strRet .= "<form name=\"frmWorldpay\" action=\"https://secure.worldpay.com/wcc/purchase\" method=\"post\">\n";
             $strRet .= "<input type=\"hidden\" name=\"instId\" value=\"".$params["plugin_worldpay_Installation ID"]."\">\n";
             $strRet .= "<input type=\"hidden\" name=\"cartId\" value=\"".$params['invoiceNumber']."\">\n";
             $strRet .= "<input type=\"hidden\" name=\"name\" value=\"".$params['userFirstName']." ".$params['userLastName']."\">\n";
             $strRet .= "<input type=\"hidden\" name=\"amount\" value=\"".sprintf("%01.2f", round($params["invoiceTotal"], 2))."\">\n";
             $strRet .= "<input type=\"hidden\" name=\"currency\" value=\"".$params["currencytype"]."\">\n";
             $strRet .= "<input type=\"hidden\" name=\"email\" value=\"".$params["userEmail"]."\">\n";
-            if (DEMO) $strRet .= "<input type=\"hidden\" name=\"testMode\" value=\"100\">\n";
+        if (DEMO) {
+            $strRet .= "<input type=\"hidden\" name=\"testMode\" value=\"100\">\n";
+        }
             $strRet .= "</form>\n";
 
             //submi script
@@ -139,12 +135,11 @@ class PluginWorldpay extends GatewayPlugin
             $strRet .= "</body></html>";
             echo $strRet;
             exit;
-
-
     }
 
     function credit($params)
-    {}
+    {
+    }
 
     /*******************************************************************************/
     // function plugin_worldpay_buildmd5($params) - plugin function, used internally
@@ -164,7 +159,7 @@ class PluginWorldpay extends GatewayPlugin
         $strRet = "<html>\n";
         $strRet .= "<head></head>\n";
         $strRet .= "<body>\n";
-        $strRet .= "<form name=\"frmWorldpay\" action=\"https://select.worldpay.com/wcc/purchase\" method=\"post\">\n";
+        $strRet .= "<form name=\"frmWorldpay\" action=\"https://secure.worldpay.com/wcc/purchase\" method=\"post\">\n";
         $strRet .= "<input type=\"hidden\" name=\"instId\" value=\"".$params["plugin_worldpay_Installation ID"]."\">\n";
         $strRet .= "<input type=\"hidden\" name=\"signatureFields\" value=\"amount:currency:cartId:instId\">\n";
         $strRet .= "<input type=\"hidden\" name=\"signature\" value=\"".$strMD5."\">\n";
@@ -173,7 +168,9 @@ class PluginWorldpay extends GatewayPlugin
         $strRet .= "<input type=\"hidden\" name=\"amount\" value=\"".sprintf("%01.2f", round($params["invoiceTotal"], 2))."\">\n";
         $strRet .= "<input type=\"hidden\" name=\"currency\" value=\"".$params["currencytype"]."\">\n";
         $strRet .= "<input type=\"hidden\" name=\"email\" value\"".$params["userEmail"]."\">\n";
-        if (DEMO) $strRet .= "<input type=\"hidden\" name=\"testMode\" value=\"100\">\n";
+        if (DEMO) {
+            $strRet .= "<input type=\"hidden\" name=\"testMode\" value=\"100\">\n";
+        }
         $strRet .= "</form>\n";
         $strRet .= "<script language=\"JavaScript\">\n";
         $strRet .= "document.forms[0].submit();\n";
@@ -183,4 +180,3 @@ class PluginWorldpay extends GatewayPlugin
         exit;
     }
 }
-?>
